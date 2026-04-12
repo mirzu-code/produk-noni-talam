@@ -18,6 +18,23 @@ const Admin = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Check file size (limit to ~2MB to avoid localStorage overflow)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Saiz gambar terlalu besar. Sila pilih gambar bawah 2MB.");
+        e.target.value = null; // reset input
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -105,16 +122,20 @@ const Admin = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Image URL</label>
+              <label className="form-label">Sila Pilih Gambar (Bawah 2MB)</label>
               <input 
-                type="url" 
-                name="image" 
+                type="file" 
+                accept="image/*"
                 className="form-control" 
-                value={formData.image} 
-                onChange={handleInputChange} 
-                required 
-                placeholder="https://..."
+                onChange={handleImageUpload} 
+                required={!formData.image} 
               />
+              {formData.image && (
+                <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <img src={formData.image} alt="Preview" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '2px solid #ddd' }} />
+                  <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Gambar Berjaya Dimuat Naik</span>
+                </div>
+              )}
             </div>
 
             <div className="form-group">

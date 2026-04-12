@@ -3,10 +3,10 @@ import { StoreContext } from '../context/StoreContext';
 import ProductCard from '../components/ProductCard';
 
 const heroImages = [
-  'https://images.unsplash.com/photo-1614088926065-983ce27efc9e?auto=format&fit=crop&q=80&w=1600',
-  'https://images.unsplash.com/photo-1541592102781-ef0f10c728ba?auto=format&fit=crop&q=80&w=1600',
-  'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&q=80&w=1600',
-  'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=1600'
+  '/gambar%20kuih/1247751-1000xauto-resep-talam-jagung.jpg',
+  '/gambar%20kuih/3-Onde-Onde.webp',
+  '/gambar%20kuih/Seri_Muka_Niaga.webp',
+  '/gambar%20kuih/images.webp'
 ];
 
 const Home = () => {

@@ -68,10 +68,6 @@ const Checkout = () => {
         method: paymentMethod.toUpperCase()
       });
 
-      // Buka WhatsApp untuk hantar pesanan terus ke telefon penjual!
-      const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP}?text=${generateWhatsAppMessage(orderId, total)}`;
-      window.open(whatsappUrl, '_blank');
-
       clearCart();
       setStep(3);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -275,12 +271,29 @@ const Checkout = () => {
             </div>
 
             <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-              <button className="btn btn-outline" style={{ display: 'block', width: '100%', marginBottom: '1rem' }} onClick={() => window.print()}>
-                Download / Print Receipt
-              </button>
-              <Link to="/" className="btn btn-primary" style={{ display: 'block', width: '100%', textAlign: 'center' }} onClick={() => setStep(1)}>
-                Return to Store
-              </Link>
+              
+              <div style={{ background: '#e6ffe6', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem', border: '2px solid #25D366' }}>
+                <h3 style={{ color: '#075E54', marginBottom: '0.5rem' }}>Langkah Terakhir!</h3>
+                <p style={{ fontSize: '0.9rem', color: '#128C7E', marginBottom: '1rem' }}>Sila tekan butang di bawah untuk menghantar salinan bil beserta resit bayaran anda kepada WhatsApp Admin untuk pengesahan pesanan.</p>
+                <a 
+                  href={`https://wa.me/${ADMIN_WHATSAPP}?text=${generateWhatsAppMessage(receiptData.orderId, receiptData.total)}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="btn btn-primary" 
+                  style={{ display: 'block', width: '100%', backgroundColor: '#25D366', borderColor: '#25D366', fontSize: '1.1rem', padding: '1rem', fontWeight: 'bold' }}
+                >
+                  Hantar Pesanan Ke WhatsApp
+                </a>
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button className="btn btn-outline" style={{ flex: 1, padding: '0.8rem' }} onClick={() => window.print()}>
+                  Print Receipt
+                </button>
+                <Link to="/" className="btn btn-outline" style={{ flex: 1, textAlign: 'center', padding: '0.8rem', backgroundColor: '#f1f5f9' }} onClick={() => setStep(1)}>
+                  Tutup
+                </Link>
+              </div>
             </div>
           </div>
 
