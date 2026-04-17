@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Checkout from './pages/Checkout';
+import Footer from './components/Footer';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = React.useContext(AuthContext);
@@ -40,6 +41,7 @@ function App() {
                   />
                 </Routes>
               </main>
+              <Footer />
             </div>
           </Router>
         </CartProvider>
