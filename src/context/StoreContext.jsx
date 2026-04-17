@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useState } from 'react';
 
 export const StoreContext = createContext();
 
@@ -27,17 +28,15 @@ const initialProducts = [
 ];
 
 export const StoreProvider = ({ children }) => {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
+  const [products, setProducts] = useState(() => {
     const storedProducts = localStorage.getItem('noniTalamProducts');
     if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
+      return JSON.parse(storedProducts);
     } else {
-      setProducts(initialProducts);
       localStorage.setItem('noniTalamProducts', JSON.stringify(initialProducts));
+      return initialProducts;
     }
-  }, []);
+  });
 
   const addProduct = (product) => {
     const newProduct = { ...product, id: Date.now() };
