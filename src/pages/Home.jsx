@@ -3,10 +3,11 @@ import { StoreContext } from '../context/StoreContext';
 import ProductCard from '../components/ProductCard';
 
 const heroImages = [
-  '/gambar%20kuih/1247751-1000xauto-resep-talam-jagung.jpg',
-  '/gambar%20kuih/3-Onde-Onde.webp',
-  '/gambar%20kuih/Seri_Muka_Niaga.webp',
-  '/gambar%20kuih/images.webp'
+  '/gambar%20kuih/talam%20jagung.jpg',
+  '/gambar%20kuih/onde-onde.webp',
+  '/gambar%20kuih/seri%20muka.webp',
+  '/gambar%20kuih/kuih%20lapis.webp',
+  '/gambar%20kuih/Talam%20Berlauk.jpg'
 ];
 
 const Home = () => {
