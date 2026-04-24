@@ -8,22 +8,25 @@ const initialProducts = [
     id: 1,
     name: 'Seri Muka Pandan',
     price: 3.50,
-    image: 'https://images.unsplash.com/photo-1614088926065-983ce27efc9e?auto=format&fit=crop&q=80&w=400',
-    description: 'Bite-sized traditional sweet with a top pandan custard layer and bottom glutinous rice layer.'
+    image: '/gambar%20kuih/seri%20muka.webp',
+    description: 'Bite-sized traditional sweet with a top pandan custard layer and bottom glutinous rice layer.',
+    isOutOfStock: false
   },
   {
     id: 2,
     name: 'Kuih Lapis',
     price: 2.00,
-    image: 'https://images.unsplash.com/photo-1541592102781-ef0f10c728ba?auto=format&fit=crop&q=80&w=400',
-    description: 'Colorful steamed layered cake with a sweet, bouncy texture.'
+    image: '/gambar%20kuih/kuih%20lapis.webp',
+    description: 'Colorful steamed layered cake with a sweet, bouncy texture.',
+    isOutOfStock: false
   },
   {
     id: 3,
     name: 'Onde-Onde',
     price: 4.00,
-    image: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&q=80&w=400',
-    description: 'Pandan flavored spheres coated with freshly grated coconut and filled with liquid palm sugar.'
+    image: '/gambar%20kuih/onde-onde.webp',
+    description: 'Pandan flavored spheres coated with freshly grated coconut and filled with liquid palm sugar.',
+    isOutOfStock: false
   }
 ];
 

@@ -10,12 +10,13 @@ const Admin = () => {
     name: '',
     price: '',
     image: '',
-    description: ''
+    description: '',
+    isOutOfStock: false
   });
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
   const handleImageUpload = (e) => {
@@ -53,7 +54,7 @@ const Admin = () => {
     }
 
     // Reset form
-    setFormData({ name: '', price: '', image: '', description: '' });
+    setFormData({ name: '', price: '', image: '', description: '', isOutOfStock: false });
   };
 
   const handleEdit = (product) => {
@@ -63,7 +64,8 @@ const Admin = () => {
       name: product.name,
       price: product.price,
       image: product.image,
-      description: product.description
+      description: product.description,
+      isOutOfStock: product.isOutOfStock || false
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -71,7 +73,7 @@ const Admin = () => {
   const cancelEdit = () => {
     setIsEditing(false);
     setCurrentId(null);
-    setFormData({ name: '', price: '', image: '', description: '' });
+    setFormData({ name: '', price: '', image: '', description: '', isOutOfStock: false });
   };
 
   return (
@@ -150,6 +152,20 @@ const Admin = () => {
               ></textarea>
             </div>
 
+            <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
+              <input 
+                type="checkbox" 
+                id="isOutOfStock"
+                name="isOutOfStock" 
+                checked={formData.isOutOfStock || false} 
+                onChange={handleInputChange} 
+                style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+              />
+              <label htmlFor="isOutOfStock" className="form-label" style={{ marginBottom: 0, cursor: 'pointer', color: '#E63946', fontWeight: 'bold' }}>
+                Mark as Out of Stock
+              </label>
+            </div>
+
             <div style={{ display: 'flex', gap: '1rem' }}>
               <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
                 {isEditing ? 'Update Product' : 'Save Product'}
@@ -187,7 +203,12 @@ const Admin = () => {
                     style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px' }} 
                   />
                   <div style={{ flex: 1 }}>
-                    <h4 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{product.name}</h4>
+                    <h4 style={{ fontSize: '1.25rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      {product.name}
+                      {product.isOutOfStock && (
+                        <span style={{ fontSize: '0.75rem', backgroundColor: '#E63946', color: 'white', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 'bold' }}>Out of Stock</span>
+                      )}
+                    </h4>
                     <span style={{ color: 'var(--color-accent)', fontWeight: 'bold', fontSize: '1.1rem' }}>
                       RM {parseFloat(product.price).toFixed(2)}
                     </span>
