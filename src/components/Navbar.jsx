@@ -25,6 +25,11 @@ const Navbar = () => {
             Store
           </Link>
 
+          <Link to="/studio" className={`nav-link ${location.pathname === '/studio' ? 'active' : ''}`}>
+            <span style={{ color: 'var(--color-primary)' }}>Stu</span>
+            <span style={{ color: 'var(--color-accent)' }}>dio</span>
+          </Link>
+
           <Link to="/checkout" className={`nav-link cart-link ${location.pathname === '/checkout' ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             🛒 Cart
             {cartCount > 0 && (
