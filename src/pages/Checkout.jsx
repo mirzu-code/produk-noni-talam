@@ -34,7 +34,15 @@ const Checkout = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const generateWhatsAppMessage = (orderId, total) => {
+  const getDeliveryFee = () => {
+    if (deliveryMethod === 'self_collect') return 0;
+    if (deliveryRegion === 'peninsular') return 5;
+    if (deliveryRegion === 'sabah_sarawak') return 10;
+    if (deliveryRegion === 'other') return 20;
+    return 0;
+  };
+
+  const generateWhatsAppMessage = (orderId, total, deliveryFee) => {
     let message = `*NEW ORDER: ${orderId}*\n\n`;
     message += `*Customer Details:*\n`;
     message += `Name: ${customerDetails.name}\n`;
@@ -47,7 +55,8 @@ const Checkout = () => {
       else if (deliveryRegion === 'sabah_sarawak') regionText = 'Sabah & Sarawak';
       else if (deliveryRegion === 'other') regionText = 'Other Country';
       message += `Region: ${regionText}\n`;
-      message += `Address: ${customerDetails.address}\n\n`;
+      message += `Address: ${customerDetails.address}\n`;
+      message += `Delivery Fee: RM ${deliveryFee.toFixed(2)}\n\n`;
     } else {
       message += `\n`;
     }
@@ -68,7 +77,9 @@ const Checkout = () => {
     setIsProcessing(true);
 
     const orderId = `ORD-${Math.floor(Math.random() * 1000000)}`;
-    const total = getCartTotal();
+    const subTotal = getCartTotal();
+    const deliveryFee = getDeliveryFee();
+    const total = subTotal + deliveryFee;
 
     setTimeout(() => {
       setIsProcessing(false);
@@ -78,7 +89,9 @@ const Checkout = () => {
         customer: { ...customerDetails },
         deliveryMethod,
         deliveryRegion,
+        deliveryFee,
         items: [...cart],
+        subTotal,
         total: total,
         method: paymentMethod.toUpperCase()
       });
@@ -115,9 +128,21 @@ const Checkout = () => {
               </div>
             </div>
           ))}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem', paddingTop: '1rem', borderTop: '2px solid var(--color-bg-subtle)', fontSize: '1.25rem', fontWeight: 'bold' }}>
-            <span>Total:</span>
-            <span style={{ color: 'var(--color-accent)' }}>RM {getCartTotal().toFixed(2)}</span>
+          <div style={{ marginTop: '2rem', paddingTop: '1rem', borderTop: '2px solid var(--color-bg-subtle)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: 'var(--color-text-muted)' }}>
+              <span>Subtotal:</span>
+              <span>RM {getCartTotal().toFixed(2)}</span>
+            </div>
+            {deliveryMethod === 'delivery' && deliveryRegion && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: 'var(--color-text-muted)' }}>
+                <span>Delivery Fee:</span>
+                <span>RM {getDeliveryFee().toFixed(2)}</span>
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
+              <span>Total:</span>
+              <span style={{ color: 'var(--color-accent)' }}>RM {(getCartTotal() + getDeliveryFee()).toFixed(2)}</span>
+            </div>
           </div>
         </>
       )}
@@ -201,7 +226,7 @@ const Checkout = () => {
         <div style={{ maxWidth: '600px', margin: '0 auto', background: 'var(--color-bg)', padding: '3rem', borderRadius: 'var(--border-radius)', boxShadow: 'var(--shadow-lg)' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <h2 style={{ color: 'var(--color-primary)' }}>Secure Payment</h2>
-            <p style={{ color: 'var(--color-text-muted)' }}>Amount to pay: <strong style={{ color: 'var(--color-accent)', fontSize: '1.2rem' }}>RM {getCartTotal().toFixed(2)}</strong></p>
+            <p style={{ color: 'var(--color-text-muted)' }}>Amount to pay: <strong style={{ color: 'var(--color-accent)', fontSize: '1.2rem' }}>RM {(getCartTotal() + getDeliveryFee()).toFixed(2)}</strong></p>
           </div>
 
           {!isProcessing ? (
@@ -232,7 +257,7 @@ const Checkout = () => {
 
                   <div style={{ backgroundColor: '#fff', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'inline-block', textAlign: 'left' }}>
                     <p style={{ margin: 0, fontSize: '0.9rem' }}><strong>Reference:</strong> NONI TALAM ORDER</p>
-                    <p style={{ margin: 0, fontSize: '0.9rem' }}><strong>Amount:</strong> RM {getCartTotal().toFixed(2)}</p>
+                    <p style={{ margin: 0, fontSize: '0.9rem' }}><strong>Amount:</strong> RM {(getCartTotal() + getDeliveryFee()).toFixed(2)}</p>
                   </div>
 
                   <p style={{ marginTop: '1.5rem', fontSize: '0.9rem', color: '#64748b' }}>Selepas berjaya bayar, tekan butang di bawah untuk hantar resit anda ke WhatsApp kami.</p>
@@ -311,6 +336,12 @@ const Checkout = () => {
                   <span>RM {(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
+              {receiptData.deliveryMethod === 'delivery' && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', fontSize: '0.95rem', color: 'var(--color-text-muted)' }}>
+                  <span>Delivery Fee</span>
+                  <span>RM {receiptData.deliveryFee.toFixed(2)}</span>
+                </div>
+              )}
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f5f5f5', padding: '1rem', borderRadius: '6px' }}>
@@ -326,7 +357,7 @@ const Checkout = () => {
                 <h3 style={{ color: '#075E54', marginBottom: '0.5rem' }}>Langkah Terakhir!</h3>
                 <p style={{ fontSize: '0.9rem', color: '#128C7E', marginBottom: '1rem' }}>Sila tekan butang di bawah untuk menghantar salinan bil beserta resit bayaran anda kepada WhatsApp Admin untuk pengesahan pesanan.</p>
                 <a 
-                  href={`https://wa.me/${ADMIN_WHATSAPP}?text=${generateWhatsAppMessage(receiptData.orderId, receiptData.total)}`} 
+                  href={`https://wa.me/${ADMIN_WHATSAPP}?text=${generateWhatsAppMessage(receiptData.orderId, receiptData.total, receiptData.deliveryFee)}`} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="btn btn-primary" 
