@@ -48,7 +48,7 @@ const Checkout = () => {
     message += `Name: ${customerDetails.name}\n`;
     message += `Phone: ${customerDetails.countryCode} ${customerDetails.phone}\n`;
     message += `Delivery Method: ${deliveryMethod === 'self_collect' ? 'Self Collect' : 'Delivery'}\n`;
-    
+
     if (deliveryMethod === 'delivery') {
       let regionText = '';
       if (deliveryRegion === 'peninsular') regionText = 'Peninsular Malaysia';
@@ -178,7 +178,7 @@ const Checkout = () => {
                     <input type="tel" name="phone" className="form-control" style={{ flex: 1 }} required value={customerDetails.phone} onChange={handleInputChange} placeholder="e.g. 123456789" />
                   </div>
                 </div>
-                
+
                 <div className="form-group" style={{ marginBottom: '1rem' }}>
                   <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem' }}>Delivery Method</label>
                   <div style={{ display: 'flex', gap: '1rem' }}>
@@ -352,15 +352,15 @@ const Checkout = () => {
             </div>
 
             <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-              
+
               <div style={{ background: '#e6ffe6', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem', border: '2px solid #25D366' }}>
                 <h3 style={{ color: '#075E54', marginBottom: '0.5rem' }}>Langkah Terakhir!</h3>
                 <p style={{ fontSize: '0.9rem', color: '#128C7E', marginBottom: '1rem' }}>Sila tekan butang di bawah untuk menghantar salinan bil beserta resit bayaran anda kepada WhatsApp Admin untuk pengesahan pesanan.</p>
-                <a 
-                  href={`https://wa.me/${ADMIN_WHATSAPP}?text=${generateWhatsAppMessage(receiptData.orderId, receiptData.total, receiptData.deliveryFee)}`} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="btn btn-primary" 
+                <a
+                  href={`https://wa.me/${ADMIN_WHATSAPP}?text=${generateWhatsAppMessage(receiptData.orderId, receiptData.total, receiptData.deliveryFee)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary"
                   style={{ display: 'block', width: '100%', backgroundColor: '#25D366', borderColor: '#25D366', fontSize: '1.1rem', padding: '1rem', fontWeight: 'bold' }}
                 >
                   Hantar Pesanan Ke WhatsApp
