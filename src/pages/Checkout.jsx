@@ -8,13 +8,14 @@ const Checkout = () => {
   const [step, setStep] = useState(1); // 1: Cart & Details, 2: Payment Gateway, 3: Receipt
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('qr');
+  const [deliveryMethod, setDeliveryMethod] = useState('self_collect');
+  const [deliveryRegion, setDeliveryRegion] = useState('');
 
   // Noni Talam Admin WhatsApp Number (Gantikan dengan nombor sebenar anda)
   const ADMIN_WHATSAPP = '60183168944';
 
   const [customerDetails, setCustomerDetails] = useState({
     name: '',
-    email: '',
     phone: '',
     address: ''
   });
@@ -37,7 +38,18 @@ const Checkout = () => {
     message += `*Customer Details:*\n`;
     message += `Name: ${customerDetails.name}\n`;
     message += `Phone: ${customerDetails.phone}\n`;
-    message += `Address: ${customerDetails.address}\n\n`;
+    message += `Delivery Method: ${deliveryMethod === 'self_collect' ? 'Self Collect' : 'Delivery'}\n`;
+    
+    if (deliveryMethod === 'delivery') {
+      let regionText = '';
+      if (deliveryRegion === 'peninsular') regionText = 'Peninsular Malaysia';
+      else if (deliveryRegion === 'sabah_sarawak') regionText = 'Sabah & Sarawak';
+      else if (deliveryRegion === 'other') regionText = 'Other Country';
+      message += `Region: ${regionText}\n`;
+      message += `Address: ${customerDetails.address}\n\n`;
+    } else {
+      message += `\n`;
+    }
 
     message += `*Order Items:*\n`;
     cart.forEach(item => {
@@ -63,6 +75,8 @@ const Checkout = () => {
         orderId: orderId,
         date: new Date().toLocaleString(),
         customer: { ...customerDetails },
+        deliveryMethod,
+        deliveryRegion,
         items: [...cart],
         total: total,
         method: paymentMethod.toUpperCase()
@@ -127,17 +141,40 @@ const Checkout = () => {
                   <input type="text" name="name" className="form-control" required value={customerDetails.name} onChange={handleInputChange} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Email Address</label>
-                  <input type="email" name="email" className="form-control" required value={customerDetails.email} onChange={handleInputChange} />
-                </div>
-                <div className="form-group">
                   <label className="form-label">Phone Number (WhatsApp Active)</label>
                   <input type="tel" name="phone" className="form-control" required value={customerDetails.phone} onChange={handleInputChange} />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Delivery Address</label>
-                  <textarea name="address" className="form-control" rows="3" required value={customerDetails.address} onChange={handleInputChange}></textarea>
+                
+                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                  <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem' }}>Delivery Method</label>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                      <input type="radio" name="deliveryMethod" value="self_collect" checked={deliveryMethod === 'self_collect'} onChange={() => setDeliveryMethod('self_collect')} /> Self Collect
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                      <input type="radio" name="deliveryMethod" value="delivery" checked={deliveryMethod === 'delivery'} onChange={() => setDeliveryMethod('delivery')} /> Delivery
+                    </label>
+                  </div>
                 </div>
+
+                {deliveryMethod === 'delivery' && (
+                  <>
+                    <div className="form-group" style={{ marginBottom: '1rem' }}>
+                      <label className="form-label">Delivery Region</label>
+                      <select className="form-control" style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} value={deliveryRegion} onChange={(e) => setDeliveryRegion(e.target.value)} required>
+                        <option value="" disabled>Select Region</option>
+                        <option value="peninsular">Peninsular Malaysia</option>
+                        <option value="sabah_sarawak">Sabah and Sarawak</option>
+                        <option value="other">Other Country</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Delivery Address</label>
+                      <textarea name="address" className="form-control" rows="3" required value={customerDetails.address} onChange={handleInputChange}></textarea>
+                    </div>
+                  </>
+                )}
+
                 <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', marginTop: '1rem' }} disabled={cart.length === 0}>
                   Proceed to Payment
                 </button>
@@ -247,9 +284,13 @@ const Checkout = () => {
                 <span style={{ color: 'var(--color-text-muted)' }}>Date:</span>
                 <strong>{receiptData.date}</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--color-text-muted)' }}>Payment Method:</span>
                 <strong>{receiptData.method}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--color-text-muted)' }}>Delivery:</span>
+                <strong>{receiptData.deliveryMethod === 'self_collect' ? 'Self Collect' : 'Delivery'}</strong>
               </div>
             </div>
 
