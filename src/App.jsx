@@ -8,7 +8,6 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Checkout from './pages/Checkout';
-import Studio from './pages/Studio';
 import Footer from './components/Footer';
 
 const ProtectedRoute = ({ children }) => {
@@ -30,7 +29,6 @@ function App() {
               <main>
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/studio" element={<Studio />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/login" element={<Login />} />
                   <Route
