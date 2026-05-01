@@ -33,13 +33,13 @@ function App() {
                   <Route path="/studio" element={<Studio />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/login" element={<Login />} />
-                  <Route 
-                    path="/admin" 
+                  <Route
+                    path="/admin"
                     element={
                       <ProtectedRoute>
                         <Admin />
                       </ProtectedRoute>
-                    } 
+                    }
                   />
                 </Routes>
               </main>
