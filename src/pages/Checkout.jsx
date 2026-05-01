@@ -17,7 +17,8 @@ const Checkout = () => {
   const [customerDetails, setCustomerDetails] = useState({
     name: '',
     phone: '',
-    address: ''
+    address: '',
+    countryCode: '+60'
   });
 
   const [receiptData, setReceiptData] = useState(null);
@@ -37,7 +38,7 @@ const Checkout = () => {
     let message = `*NEW ORDER: ${orderId}*\n\n`;
     message += `*Customer Details:*\n`;
     message += `Name: ${customerDetails.name}\n`;
-    message += `Phone: ${customerDetails.phone}\n`;
+    message += `Phone: ${customerDetails.countryCode} ${customerDetails.phone}\n`;
     message += `Delivery Method: ${deliveryMethod === 'self_collect' ? 'Self Collect' : 'Delivery'}\n`;
     
     if (deliveryMethod === 'delivery') {
@@ -142,7 +143,15 @@ const Checkout = () => {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Phone Number (WhatsApp Active)</label>
-                  <input type="tel" name="phone" className="form-control" required value={customerDetails.phone} onChange={handleInputChange} />
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <select name="countryCode" className="form-control" style={{ width: '130px', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} value={customerDetails.countryCode} onChange={handleInputChange}>
+                      <option value="+60">🇲🇾 +60 (MY)</option>
+                      <option value="+65">🇸🇬 +65 (SG)</option>
+                      <option value="+62">🇮🇩 +62 (ID)</option>
+                      <option value="+673">🇧🇳 +673 (BN)</option>
+                    </select>
+                    <input type="tel" name="phone" className="form-control" style={{ flex: 1 }} required value={customerDetails.phone} onChange={handleInputChange} placeholder="e.g. 123456789" />
+                  </div>
                 </div>
                 
                 <div className="form-group" style={{ marginBottom: '1rem' }}>
