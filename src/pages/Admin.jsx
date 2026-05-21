@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { StoreContext } from '../context/StoreContext';
 
 const Admin = () => {
-  const { products, addProduct, updateProduct, deleteProduct } = useContext(StoreContext);
+  const { products, addProduct, updateProduct, deleteProduct, tiktokUrl, updateTikTokUrl } = useContext(StoreContext);
   
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
@@ -76,10 +76,74 @@ const Admin = () => {
     setFormData({ name: '', price: '', image: '', description: '', isOutOfStock: false });
   };
 
+  const [tiktokLink, setTiktokLink] = useState(tiktokUrl || '');
+
+  React.useEffect(() => {
+    setTiktokLink(tiktokUrl || '');
+  }, [tiktokUrl]);
+
+  const handleTikTokChange = (e) => {
+    setTiktokLink(e.target.value);
+  };
+
+  const saveTikTokLink = () => {
+    const url = tiktokLink.trim();
+    if (url && !/^https?:\/\//i.test(url)) {
+      alert('Please include http:// or https:// in the TikTok Shop link.');
+      return;
+    }
+    updateTikTokUrl(url);
+    alert(url ? 'TikTok Shop link saved successfully.' : 'TikTok Shop link cleared.');
+  };
+
   return (
     <div className="admin-page container" style={{ padding: '3rem 2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2>Product Management</h2>
+        <h2>Admin Dashboard</h2>
+      </div>
+
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{
+          background: 'var(--color-bg)',
+          padding: '2rem',
+          borderRadius: 'var(--border-radius)',
+          boxShadow: 'var(--shadow-md)'
+        }}>
+          <h3 style={{ marginBottom: '0.75rem', color: 'var(--color-text-main)' }}>TikTok Shop Redirect</h3>
+          <p style={{ marginBottom: '1rem', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
+            Paste the TikTok Shop link here so the homepage redirects directly to your store. This is the first thing admins should set.
+          </p>
+
+          <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label className="form-label" style={{ fontWeight: '700', marginBottom: '0.5rem', display: 'block' }}>
+              Paste TikTok Shop Link
+            </label>
+            <input
+              type="url"
+              name="tiktokLink"
+              className="form-control"
+              value={tiktokLink}
+              onChange={handleTikTokChange}
+              placeholder="https://www.tiktok.com/@yourshop"
+              style={{ width: '100%', minHeight: '3rem' }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+            <button type="button" className="btn btn-primary" onClick={saveTikTokLink}>
+              Save TikTok Link
+            </button>
+            <button type="button" className="btn btn-outline" onClick={() => setTiktokLink(tiktokUrl || '')}>
+              Reset Link
+            </button>
+          </div>
+
+          {tiktokUrl && (
+            <p style={{ marginTop: '1rem', color: 'var(--color-text-muted)', wordBreak: 'break-all' }}>
+              Current URL: <a href={tiktokUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--color-accent)' }}>{tiktokUrl}</a>
+            </p>
+          )}
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '3rem', alignItems: 'start' }}>

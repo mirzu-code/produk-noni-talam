@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StoreContext } from '../context/StoreContext';
-import ProductCard from '../components/ProductCard';
 
 const heroImages = [
   '/gambar%20kuih/talam%20jagung.jpg',
@@ -11,7 +10,7 @@ const heroImages = [
 ];
 
 const Home = () => {
-  const { products } = useContext(StoreContext);
+  const { tiktokUrl } = useContext(StoreContext);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Carousel Effect
@@ -22,6 +21,20 @@ const Home = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!tiktokUrl) return;
+    const timer = setTimeout(() => {
+      window.location.href = tiktokUrl;
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, [tiktokUrl]);
+
+  const redirectToTikTok = () => {
+    if (tiktokUrl) {
+      window.location.href = tiktokUrl;
+    }
+  };
 
   return (
     <div className="home-page">
@@ -70,37 +83,31 @@ const Home = () => {
             Welcome to Noni Talam
           </h1>
           <p className="animate-fade-up" style={{ fontSize: '1.3rem', maxWidth: '650px', margin: '0 auto 2.5rem', opacity: 0.95, animationDelay: '0.2s', textShadow: '1px 1px 2px rgba(0,0,0,0.4)' }}>
-            Experience the finest selection of premium traditional delicacies crafted with passion, authenticity, and generational recipes.
+            You are just one click away from our TikTok Shop. If the redirect does not happen automatically, press the button below.
           </p>
-          <button className="btn btn-accent animate-fade-up" style={{ animationDelay: '0.4s', padding: '1rem 2rem', fontSize: '1.1rem' }} onClick={() => window.scrollTo({top: 600, behavior: 'smooth'})}>
-            Explore Our Menu
-          </button>
+          {tiktokUrl ? (
+            <>
+              <button className="btn btn-accent animate-fade-up" style={{ animationDelay: '0.4s', padding: '1rem 2rem', fontSize: '1.1rem' }} onClick={redirectToTikTok}>
+                Visit TikTok Shop Now
+              </button>
+              <p style={{ marginTop: '1.5rem', fontSize: '1rem', opacity: 0.9 }}>
+                Redirecting in a few seconds...
+              </p>
+            </>
+          ) : (
+            <p style={{ marginTop: '1rem', fontSize: '1.05rem', opacity: 0.9 }}>
+              TikTok Shop link is not configured yet. Please login to the admin page and add your TikTok shop URL.
+            </p>
+          )}
         </div>
       </section>
 
-      {/* Products Section */}
-      <section className="products-section" style={{ padding: '5rem 0' }}>
+      <section style={{ padding: '4rem 0', textAlign: 'center' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: '2.8rem', marginBottom: '0.5rem' }}>Our Signature Delicacies</h2>
-            <div style={{ width: '80px', height: '4px', backgroundColor: 'var(--color-accent)', margin: '0 auto' }}></div>
-          </div>
-          
-          {products.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
-              <p>No products available at the moment. Please check back later.</p>
-            </div>
-          ) : (
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-              gap: '2.5rem' 
-            }}>
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
+          <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Fast Redirect to TikTok Shop</h2>
+          <p style={{ maxWidth: '720px', margin: '0 auto', color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
+            This page is designed as a landing page that sends visitors straight to your TikTok Shop. Manage the target link from the admin dashboard.
+          </p>
         </div>
       </section>
     </div>

@@ -41,6 +41,10 @@ export const StoreProvider = ({ children }) => {
     }
   });
 
+  const [tiktokUrl, setTikTokUrl] = useState(() => {
+    return localStorage.getItem('noniTalamTikTokUrl') || '';
+  });
+
   const addProduct = (product) => {
     const newProduct = { ...product, id: Date.now() };
     const updatedProducts = [...products, newProduct];
@@ -60,8 +64,13 @@ export const StoreProvider = ({ children }) => {
     localStorage.setItem('noniTalamProducts', JSON.stringify(updatedProducts));
   };
 
+  const updateTikTokUrl = (url) => {
+    setTikTokUrl(url);
+    localStorage.setItem('noniTalamTikTokUrl', url);
+  };
+
   return (
-    <StoreContext.Provider value={{ products, addProduct, updateProduct, deleteProduct }}>
+    <StoreContext.Provider value={{ products, addProduct, updateProduct, deleteProduct, tiktokUrl, updateTikTokUrl }}>
       {children}
     </StoreContext.Provider>
   );
