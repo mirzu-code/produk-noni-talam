@@ -4,22 +4,45 @@ import { supabase, buildAdminEmail } from '../supabaseClient';
 
 export const AuthContext = createContext();
 
-const getAdminRecord = async (email) => {
-  if (!email) return null;
-  const { data, error } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('email', email)
-    .eq('is_active', true)
-    .single();
+const getAdminRecord = async (identifier) => {
+  if (!identifier) return null;
+  try {
+    const raw = identifier.trim();
+    // If identifier looks like an email, try case-insensitive email match first
+    if (raw.includes('@')) {
+      const email = raw.toLowerCase();
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .ilike('email', email)
+        .eq('is_active', true)
+        .maybeSingle();
 
-  if (error) {
-    console.warn('Admin lookup failed:', error.message);
-    // Allow login if admin_users cannot be read due to policies, but still use a generic admin profile.
-    return { email, username: null, role: 'Admin', is_active: true };
+      if (!error && data) return data;
+    }
+
+    // Otherwise or as fallback, try matching by username (trimmed, case-insensitive)
+    const normalized = raw.replace(/\s+/g, '').toLowerCase();
+    const { data: rows, error: rowsErr } = await supabase
+      .from('admin_users')
+      .select('*')
+      .eq('is_active', true);
+
+    if (rowsErr) {
+      console.warn('Admin lookup failed:', rowsErr.message);
+      return null;
+    }
+
+    const match = rows?.find((item) => {
+      const username = item.username?.trim().toLowerCase();
+      return username === raw.toLowerCase() || username?.replace(/\s+/g, '') === normalized;
+    });
+
+    return match || null;
+  } catch (e) {
+    console.warn('Admin lookup failed:', e?.message || e);
+    return null;
   }
-
-  return data || null;
 };
 
 const resolveAdminEmail = async (identifier) => {
