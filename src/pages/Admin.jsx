@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { StoreContext } from '../context/StoreContext';
+import { AuthContext } from '../context/AuthContext';
 
 const Admin = () => {
   const { products, addProduct, updateProduct, deleteProduct } = useContext(StoreContext);
+  const { adminUser } = useContext(AuthContext);
   
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
@@ -78,10 +80,22 @@ const Admin = () => {
     setFormData({ name: '', price: '', image: '', description: '', shopUrl: '', isOutOfStock: false });
   };
 
+  const displayRole = (role) => {
+    if (!role) return 'Admin';
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  };
+
   return (
     <div className="admin-page container" style={{ padding: '3rem 2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2>Admin Dashboard</h2>
+        <div>
+          <h2>Admin Dashboard</h2>
+          {adminUser && (
+            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
+              Hi <strong>{displayRole(adminUser.role)}</strong>, welcome back{adminUser.username ? ` — ${adminUser.username}` : ''}!
+            </p>
+          )}
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '3rem', alignItems: 'start' }}>
