@@ -8,6 +8,8 @@ const getAdminRecord = async (identifier) => {
   if (!identifier) return null;
   try {
     const raw = identifier.trim();
+    const normalized = raw.replace(/\s+/g, '').toLowerCase();
+
     // If identifier looks like an email, try case-insensitive email match first
     if (raw.includes('@')) {
       const email = raw.toLowerCase();
@@ -19,10 +21,24 @@ const getAdminRecord = async (identifier) => {
         .maybeSingle();
 
       if (!error && data) return data;
+
+      // Also try matching by username using the local-part of the email
+      const localPart = email.split('@')[0];
+      const { data: rows, error: rowsErr } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('is_active', true);
+
+      if (!rowsErr && rows) {
+        const usernameMatch = rows.find((item) => {
+          const username = item.username?.trim().toLowerCase();
+          return username === localPart || username?.replace(/\s+/g, '') === localPart;
+        });
+        if (usernameMatch) return usernameMatch;
+      }
     }
 
     // Otherwise or as fallback, try matching by username (trimmed, case-insensitive)
-    const normalized = raw.replace(/\s+/g, '').toLowerCase();
     const { data: rows, error: rowsErr } = await supabase
       .from('admin_users')
       .select('*')
@@ -129,7 +145,10 @@ export const AuthProvider = ({ children }) => {
     }
 
     const userEmail = data.session?.user?.email;
-    const admin = await getAdminRecord(userEmail);
+    let admin = await getAdminRecord(userEmail);
+    if (!admin) {
+      admin = await getAdminRecord(username);
+    }
     if (!admin) {
       await supabase.auth.signOut();
       return { success: false, message: 'Admin access not found' };
