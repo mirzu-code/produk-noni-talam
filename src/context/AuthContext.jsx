@@ -24,11 +24,20 @@ const getAdminRecord = async (email) => {
 const resolveAdminEmail = async (identifier) => {
   const raw = identifier?.trim();
   if (!raw) return null;
+  const normalized = raw.replace(/\s+/g, '').toLowerCase();
+
   if (raw.includes('@')) {
-    return raw.toLowerCase();
+    const email = raw.toLowerCase();
+    const { data } = await supabase
+      .from('admin_users')
+      .select('email')
+      .eq('email', email)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    return data?.email ?? null;
   }
 
-  const normalized = raw.replace(/\s+/g, '').toLowerCase();
   const { data, error } = await supabase
     .from('admin_users')
     .select('email, username')
@@ -36,7 +45,7 @@ const resolveAdminEmail = async (identifier) => {
 
   if (error) {
     console.warn('Admin email lookup failed:', error.message);
-    return buildAdminEmail(raw);
+    return null;
   }
 
   const match = data?.find((item) => {
@@ -44,7 +53,7 @@ const resolveAdminEmail = async (identifier) => {
     return username === raw.toLowerCase() || username?.replace(/\s+/g, '') === normalized;
   });
 
-  return match?.email ?? buildAdminEmail(raw);
+  return match?.email ?? null;
 };
 
 export const AuthProvider = ({ children }) => {
