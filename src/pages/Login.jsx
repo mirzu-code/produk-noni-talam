@@ -9,15 +9,15 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
-    const success = login(username, password);
+
+    const success = await login(username, password);
     if (success) {
       navigate('/admin');
     } else {
-      setError('Invalid username or password. (Hint: use admin / admin123)');
+      setError('Invalid username or password. Please use your Supabase admin credentials.');
     }
   };
 
@@ -59,7 +59,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label" htmlFor="username">Username</label>
+            <label className="form-label" htmlFor="username">Username or Email</label>
             <input 
               type="text" 
               id="username"
@@ -67,7 +67,7 @@ const Login = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="Enter username"
+              placeholder="admin 01 or admin01@example.com"
             />
           </div>
           
@@ -87,6 +87,9 @@ const Login = () => {
           <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
             Login to Dashboard
           </button>
+          <p style={{ marginTop: '1rem', color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
+            Example admin login: <strong>admin 01</strong> / <strong>Mirzu12345</strong>
+          </p>
         </form>
       </div>
     </div>

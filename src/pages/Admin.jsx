@@ -37,7 +37,7 @@ const Admin = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Ensure price is a number
@@ -47,11 +47,11 @@ const Admin = () => {
     };
 
     if (isEditing) {
-      updateProduct(currentId, productData);
+      await updateProduct(currentId, productData);
       setIsEditing(false);
       setCurrentId(null);
     } else {
-      addProduct(productData);
+      await addProduct(productData);
     }
 
     // Reset form
