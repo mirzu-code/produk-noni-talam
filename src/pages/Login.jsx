@@ -67,11 +67,8 @@ const Login = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="admin 01, admin01, or admin01@example.com"
+              placeholder="admin 01, admin01, or email"
             />
-            <small style={{ color: 'var(--color-text-muted)', display: 'block', marginTop: '0.5rem' }}>
-              You can login with username like <strong>admin 01</strong> or <strong>admin01</strong>, or use your admin email.
-            </small>
           </div>
           
           <div className="form-group">
@@ -92,9 +89,6 @@ const Login = () => {
           </button>
           <p style={{ marginTop: '1rem', color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
             Example admin login: <strong>admin 01</strong> / <strong>Mirzu12345</strong>
-          </p>
-          <p style={{ marginTop: '0.5rem', color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
-            You can also use the email format if you prefer: <strong>admin01@noni-talam-admin.com</strong> / <strong>Mirzu12345</strong>
           </p>
         </form>
       </div>
