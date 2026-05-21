@@ -13,11 +13,11 @@ const Login = () => {
     e.preventDefault();
     setError('');
 
-    const success = await login(username, password);
-    if (success) {
+    const result = await login(username, password);
+    if (result?.success) {
       navigate('/admin');
     } else {
-      setError('Invalid username or password. Please use your Supabase admin credentials.');
+      setError(result?.message || 'Invalid username or password. Please use your Supabase admin credentials.');
     }
   };
 
@@ -37,7 +37,7 @@ const Login = () => {
         boxShadow: 'var(--shadow-lg)',
         width: '100%',
         maxWidth: '450px'
-      }} className="animate-fade-up">
+      }} className="animate-fade-up auth-card">
         
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Admin Access</h2>

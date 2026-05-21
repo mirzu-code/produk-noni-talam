@@ -1,10 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { StoreContext } from '../context/StoreContext';
 import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const Admin = () => {
   const { products, addProduct, updateProduct, deleteProduct } = useContext(StoreContext);
-  const { adminUser } = useContext(AuthContext);
+  const { adminUser, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
@@ -88,17 +91,24 @@ const Admin = () => {
   return (
     <div className="admin-page container" style={{ padding: '3rem 2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <div>
-          <h2>Admin Dashboard</h2>
-          {adminUser && (
-            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
-              Hi <strong>{displayRole(adminUser.role)}</strong>, welcome back{adminUser.username ? ` — ${adminUser.username}` : ''}!
-            </p>
-          )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div>
+            <h2>Admin Dashboard</h2>
+            {adminUser && (
+              <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
+                Hi <strong>{displayRole(adminUser.role)}</strong>, welcome back{adminUser.username ? ` — ${adminUser.username}` : ''}!
+              </p>
+            )}
+          </div>
+          <div>
+            <button onClick={async () => { await logout(); navigate('/login'); }} className="btn btn-outline">
+              Logout
+            </button>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '3rem', alignItems: 'start' }}>
+      <div className="admin-grid">
         
         {/* Form Section */}
         <div style={{ 

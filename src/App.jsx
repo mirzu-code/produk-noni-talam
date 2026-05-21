@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
+import RegisterAdmin from './pages/RegisterAdmin';
 import Footer from './components/Footer';
 
 const ProtectedRoute = ({ children }) => {
@@ -27,6 +28,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/register-admin" element={<RegisterAdmin />} />
                   <Route
                     path="/admin"
                     element={
