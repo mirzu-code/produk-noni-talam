@@ -95,9 +95,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = async () => {
       const { data } = await supabase.auth.getSession();
-      const user = data.session?.user;
+      const user = data.session?.user ?? data.user;
       if (user?.email) {
-        const admin = await getAdminRecord(user.email);
+        let admin = await getAdminRecord(user.email);
+        if (!admin && user.email.includes('@')) {
+          const localPart = user.email.split('@')[0];
+          admin = await getAdminRecord(localPart);
+        }
         if (admin) {
           setIsAuthenticated(true);
           setAdminUser(admin);
@@ -144,10 +148,15 @@ export const AuthProvider = ({ children }) => {
       return { success: false, message: msg };
     }
 
-    const userEmail = data.session?.user?.email;
+    const user = data.session?.user ?? data.user;
+    const userEmail = user?.email;
     let admin = await getAdminRecord(userEmail);
     if (!admin) {
       admin = await getAdminRecord(username);
+    }
+    if (!admin && userEmail?.includes('@')) {
+      const localPart = userEmail.split('@')[0];
+      admin = await getAdminRecord(localPart);
     }
     if (!admin) {
       await supabase.auth.signOut();
