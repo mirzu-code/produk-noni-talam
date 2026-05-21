@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { StoreContext } from '../context/StoreContext';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 
 const Admin = () => {
   const { products, addProduct, updateProduct, deleteProduct } = useContext(StoreContext);
