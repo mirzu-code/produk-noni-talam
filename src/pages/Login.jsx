@@ -6,18 +6,21 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [debug, setDebug] = useState(null);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setDebug(null);
 
     const result = await login(username, password);
     if (result?.success) {
       navigate('/admin');
     } else {
       setError(result?.message || 'Invalid username or password. Please use your Supabase admin credentials.');
+      setDebug(result?.debug || null);
     }
   };
 
@@ -54,6 +57,16 @@ const Login = () => {
             fontSize: '0.9rem'
           }}>
             {error}
+            {debug && (
+              <div style={{ marginTop: '0.75rem', color: '#9C27B0', fontSize: '0.8rem', textAlign: 'left' }}>
+                <strong>Debug:</strong>
+                <div>Email found in admin_users: {debug.foundEmail ? 'Yes' : 'No'}</div>
+                <div>Username found in admin_users: {debug.foundUsername ? 'Yes' : 'No'}</div>
+                <div>Username local-part found: {debug.foundLocalPart ? 'Yes' : 'No'}</div>
+                <div>Active admin rows: {debug.rowCount}</div>
+                {debug.error && <div>Lookup error: {debug.error}</div>}
+              </div>
+            )}
           </div>
         )}
 

@@ -143,7 +143,33 @@ export const AuthProvider = ({ children }) => {
     }
     if (!admin) {
       await supabase.auth.signOut();
-      return { success: false, message: 'Admin access not found' };
+      const { data: rows, error: rowsErr } = await supabase
+        .from('admin_users')
+        .select('email, username, role, is_active');
+
+      const foundEmail = rows?.some((row) => row.email?.toLowerCase() === userEmail?.toLowerCase());
+      const foundUsername = rows?.some((row) => {
+        const usernameNormalized = row.username?.trim().toLowerCase();
+        return usernameNormalized === username?.trim().toLowerCase();
+      });
+      const foundLocalPart = rows?.some((row) => {
+        const usernameNormalized = row.username?.trim().toLowerCase();
+        return usernameNormalized === userEmail?.split('@')[0]?.toLowerCase();
+      });
+
+      return {
+        success: false,
+        message: 'Admin access not found',
+        debug: {
+          userEmail,
+          username,
+          foundEmail,
+          foundUsername,
+          foundLocalPart,
+          rowCount: rows?.length ?? 0,
+          error: rowsErr?.message ?? null
+        }
+      };
     }
 
     setIsAuthenticated(true);
