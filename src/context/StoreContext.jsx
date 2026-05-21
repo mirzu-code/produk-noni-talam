@@ -10,6 +10,7 @@ const initialProducts = [
     price: 3.50,
     image: '/gambar%20kuih/seri%20muka.webp',
     description: 'Bite-sized traditional sweet with a top pandan custard layer and bottom glutinous rice layer.',
+    shopUrl: '',
     isOutOfStock: false
   },
   {
@@ -18,6 +19,7 @@ const initialProducts = [
     price: 2.00,
     image: '/gambar%20kuih/kuih%20lapis.webp',
     description: 'Colorful steamed layered cake with a sweet, bouncy texture.',
+    shopUrl: '',
     isOutOfStock: false
   },
   {
@@ -26,6 +28,7 @@ const initialProducts = [
     price: 4.00,
     image: '/gambar%20kuih/onde-onde.webp',
     description: 'Pandan flavored spheres coated with freshly grated coconut and filled with liquid palm sugar.',
+    shopUrl: '',
     isOutOfStock: false
   }
 ];
@@ -39,10 +42,6 @@ export const StoreProvider = ({ children }) => {
       localStorage.setItem('noniTalamProducts', JSON.stringify(initialProducts));
       return initialProducts;
     }
-  });
-
-  const [tiktokUrl, setTikTokUrl] = useState(() => {
-    return localStorage.getItem('noniTalamTikTokUrl') || '';
   });
 
   const addProduct = (product) => {
@@ -64,13 +63,8 @@ export const StoreProvider = ({ children }) => {
     localStorage.setItem('noniTalamProducts', JSON.stringify(updatedProducts));
   };
 
-  const updateTikTokUrl = (url) => {
-    setTikTokUrl(url);
-    localStorage.setItem('noniTalamTikTokUrl', url);
-  };
-
   return (
-    <StoreContext.Provider value={{ products, addProduct, updateProduct, deleteProduct, tiktokUrl, updateTikTokUrl }}>
+    <StoreContext.Provider value={{ products, addProduct, updateProduct, deleteProduct }}>
       {children}
     </StoreContext.Provider>
   );

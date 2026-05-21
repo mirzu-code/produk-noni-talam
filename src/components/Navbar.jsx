@@ -1,18 +1,14 @@
 import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { CartContext } from '../context/CartContext';
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
-  const { getCartCount } = useContext(CartContext);
   const location = useLocation();
 
   const handleLogout = () => {
     logout();
   };
-
-  const cartCount = getCartCount();
 
   return (
     <nav className="navbar">
@@ -23,22 +19,6 @@ const Navbar = () => {
         <div className="navbar-nav">
           <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
             Store
-          </Link>
-
-          <Link to="/checkout" className={`nav-link cart-link ${location.pathname === '/checkout' ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            🛒 Cart
-            {cartCount > 0 && (
-              <span style={{
-                backgroundColor: 'var(--color-accent)',
-                color: 'var(--color-text-main)',
-                borderRadius: '50%',
-                padding: '2px 8px',
-                fontSize: '0.8rem',
-                fontWeight: 'bold'
-              }}>
-                {cartCount}
-              </span>
-            )}
           </Link>
 
           {isAuthenticated ? (

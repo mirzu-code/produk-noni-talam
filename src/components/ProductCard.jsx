@@ -1,15 +1,13 @@
-import React, { useContext, useState } from 'react';
-import { CartContext } from '../context/CartContext';
+import React from 'react';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
-  const { addToCart } = useContext(CartContext);
-  const [added, setAdded] = useState(false);
+  const shopLink = product.shopUrl?.trim();
+  const hasLink = Boolean(shopLink);
 
-  const handleAdd = () => {
-    addToCart(product);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+  const handleView = () => {
+    if (!hasLink) return;
+    window.open(shopLink, '_blank', 'noreferrer');
   };
 
   return (
@@ -22,15 +20,14 @@ const ProductCard = ({ product }) => {
           </div>
         )}
         <div className="product-overlay">
-          {product.isOutOfStock ? (
-            <button className="btn btn-danger" disabled style={{ cursor: 'not-allowed', opacity: 0.9 }}>
-              Out of Stock
-            </button>
-          ) : (
-            <button className={`btn ${added ? 'btn-accent' : 'btn-primary'}`} onClick={handleAdd}>
-              {added ? '✓ Added to Cart' : 'Add to Order'}
-            </button>
-          )}
+          <button
+            className={`btn ${hasLink ? 'btn-primary' : 'btn-outline'}`}
+            onClick={handleView}
+            disabled={!hasLink}
+            style={{ cursor: hasLink ? 'pointer' : 'not-allowed' }}
+          >
+            {hasLink ? 'View on TikTok' : 'Link not set'}
+          </button>
         </div>
       </div>
       <div className="product-info">
@@ -39,19 +36,18 @@ const ProductCard = ({ product }) => {
         <div className="product-footer">
           <span className="product-price">RM {parseFloat(product.price).toFixed(2)}</span>
           {/* Mobile visible add button since hover isn't on mobile */}
-          <button 
-            className={`btn ${product.isOutOfStock ? 'btn-danger' : 'btn-outline'}`} 
-            style={{ 
-              padding: '0.4rem 0.8rem', 
-              fontSize: '0.9rem', 
-              opacity: product.isOutOfStock ? 0.6 : 1, 
-              cursor: product.isOutOfStock ? 'not-allowed' : 'pointer',
-              border: product.isOutOfStock ? 'none' : ''
+          <button
+            className={`btn ${hasLink ? 'btn-outline' : 'btn-secondary'}`}
+            style={{
+              padding: '0.4rem 0.8rem',
+              fontSize: '0.9rem',
+              opacity: hasLink ? 1 : 0.6,
+              cursor: hasLink ? 'pointer' : 'not-allowed'
             }}
-            onClick={product.isOutOfStock ? null : handleAdd}
-            disabled={product.isOutOfStock}
+            onClick={handleView}
+            disabled={!hasLink}
           >
-            {product.isOutOfStock ? 'Sold Out' : (added ? '✓' : '+ Add')}
+            {hasLink ? 'View on TikTok' : 'No Link'}
           </button>
         </div>
       </div>
