@@ -81,6 +81,26 @@ export const AuthProvider = ({ children }) => {
 
     if (error) {
       console.warn('Supabase login error:', error.message);
+      // If Supabase Auth sign-in fails, allow a fallback to check the admin_users.password column
+      // (useful if admin rows were created manually and Auth users not created). This is a
+      // compatibility fallback — prefer Supabase Auth for real deployments.
+      try {
+        const { data: adminRow, error: adminErr } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('email', email)
+          .maybeSingle();
+
+        if (!adminErr && adminRow && adminRow.password && adminRow.password === password) {
+          // authenticate using the admin_users password fallback
+          setIsAuthenticated(true);
+          setAdminUser(adminRow);
+          return { success: true, message: 'Authenticated via admin_users fallback' };
+        }
+      } catch (e) {
+        console.warn('Fallback admin password check failed:', e?.message || e);
+      }
+
       const msg = error.message?.toLowerCase().includes('invalid') ? 'Invalid email or password' : error.message;
       return { success: false, message: msg };
     }
