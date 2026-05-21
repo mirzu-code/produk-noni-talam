@@ -160,6 +160,28 @@ const Admin = () => {
           <h3 style={{ marginBottom: '1.5rem', color: 'var(--color-text-main)' }}>
             {isEditing ? 'Edit Product' : 'Add New Product'}
           </h3>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
+            You can edit product details here and also manage the TikTok Shop redirect link in the same box.
+          </p>
+          <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label className="form-label">TikTok Shop Redirect Link</label>
+            <input
+              type="url"
+              name="tiktokLink"
+              className="form-control"
+              value={tiktokLink}
+              onChange={handleTikTokChange}
+              placeholder="https://www.tiktok.com/@yourshop"
+            />
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+            <button type="button" className="btn btn-secondary" onClick={saveTikTokLink}>
+              Save Link
+            </button>
+            <button type="button" className="btn btn-outline" onClick={() => setTiktokLink(tiktokUrl || '')}>
+              Reset Link
+            </button>
+          </div>
           
           <form onSubmit={handleSubmit}>
             <div className="form-group">
