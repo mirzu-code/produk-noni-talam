@@ -9,49 +9,32 @@ const getAdminRecord = async (identifier) => {
   try {
     const raw = identifier.trim();
     const normalized = raw.replace(/\s+/g, '').toLowerCase();
+    const searchEmail = raw.includes('@') ? raw.toLowerCase() : null;
+    const localPart = searchEmail ? searchEmail.split('@')[0] : null;
 
-    // If identifier looks like an email, try case-insensitive email match first
-    if (raw.includes('@')) {
-      const email = raw.toLowerCase();
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('*')
-        .ilike('email', email)
-        .eq('is_active', true)
-        .maybeSingle();
-
-      if (!error && data) return data;
-
-      // Also try matching by username using the local-part of the email
-      const localPart = email.split('@')[0];
-      const { data: rows, error: rowsErr } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('is_active', true);
-
-      if (!rowsErr && rows) {
-        const usernameMatch = rows.find((item) => {
-          const username = item.username?.trim().toLowerCase();
-          return username === localPart || username?.replace(/\s+/g, '') === localPart;
-        });
-        if (usernameMatch) return usernameMatch;
-      }
-    }
-
-    // Otherwise or as fallback, try matching by username (trimmed, case-insensitive)
-    const { data: rows, error: rowsErr } = await supabase
+    const { data: rows, error } = await supabase
       .from('admin_users')
       .select('*')
       .eq('is_active', true);
 
-    if (rowsErr) {
-      console.warn('Admin lookup failed:', rowsErr.message);
+    if (error) {
+      console.warn('Admin lookup failed:', error.message);
       return null;
     }
 
-    const match = rows?.find((item) => {
+    if (!rows?.length) return null;
+
+    const match = rows.find((item) => {
+      const email = item.email?.trim().toLowerCase();
       const username = item.username?.trim().toLowerCase();
-      return username === raw.toLowerCase() || username?.replace(/\s+/g, '') === normalized;
+      const usernameNoSpace = username?.replace(/\s+/g, '');
+
+      if (searchEmail && email === searchEmail) return true;
+      if (localPart && username === localPart) return true;
+      if (username === raw.toLowerCase()) return true;
+      if (usernameNoSpace === normalized) return true;
+      if (email === normalized) return true;
+      return false;
     });
 
     return match || null;
