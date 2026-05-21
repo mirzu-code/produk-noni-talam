@@ -37,14 +37,9 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <>
-              <Link to="/login" className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}>
-                Admin
-              </Link>
-              <Link to="/register-admin" className={`nav-link ${location.pathname === '/register-admin' ? 'active' : ''}`}>
-                Register
-              </Link>
-            </>
+            <Link to="/login" className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}>
+              Admin
+            </Link>
           )}
         </div>
       </div>
