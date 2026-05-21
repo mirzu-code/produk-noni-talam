@@ -41,7 +41,7 @@ const Login = () => {
         
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Admin Access</h2>
-          <p style={{ color: 'var(--color-text-muted)' }}>Manage your premium store</p>
+          <p style={{ color: 'var(--color-text-muted)' }}>Login with your registered admin account.</p>
         </div>
 
         {error && (
