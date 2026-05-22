@@ -71,13 +71,8 @@ export const StoreProvider = ({ children }) => {
 
     if (error) {
       console.error('Failed to load products from Supabase:', error.message);
-      const storedProducts = localStorage.getItem('noniTalamProducts');
-      if (storedProducts) {
-        setProducts(JSON.parse(storedProducts));
-      } else {
-        setProducts(initialProducts);
-        saveLocalProducts(initialProducts);
-      }
+      alert('Unable to load products from cloud database. Please check Supabase connection and permissions.');
+      setProducts([]);
     } else {
       const mapped = (data || []).map(mapDbProduct);
       setProducts(mapped);
@@ -94,13 +89,10 @@ export const StoreProvider = ({ children }) => {
     const dbProduct = toDbProduct(product);
     const { data, error } = await supabase.from('products').insert([dbProduct]).select().single();
 
-    if (error) {
-      console.error('Failed to add product to Supabase:', error.message);
-      const newProduct = { ...product, id: Date.now() };
-      const updatedProducts = [newProduct, ...products];
-      setProducts(updatedProducts);
-      saveLocalProducts(updatedProducts);
-      return newProduct;
+    if (error || !data) {
+      console.error('Failed to add product to Supabase:', error?.message || 'No data returned');
+      alert('Unable to save product to cloud database. Please check Supabase permissions and connection.');
+      return null;
     }
 
     const mapped = mapDbProduct(data);
@@ -119,32 +111,30 @@ export const StoreProvider = ({ children }) => {
       .select()
       .single();
 
-    const updatedProducts = products.map((p) => (p.id === id ? { ...p, ...updatedData } : p));
-    setProducts(updatedProducts);
-    saveLocalProducts(updatedProducts);
-
-    if (error) {
-      console.error('Failed to update product in Supabase:', error.message);
+    if (error || !data) {
+      console.error('Failed to update product in Supabase:', error?.message || 'No data returned');
+      alert('Unable to update product in cloud database. Please check Supabase permissions and connection.');
       return;
     }
 
-    if (data) {
-      const mapped = mapDbProduct(data);
-      const refreshed = products.map((p) => (p.id === id ? mapped : p));
-      setProducts(refreshed);
-      saveLocalProducts(refreshed);
-    }
+    const mapped = mapDbProduct(data);
+    const refreshed = products.map((p) => (p.id === id ? mapped : p));
+    setProducts(refreshed);
+    saveLocalProducts(refreshed);
   };
 
   const deleteProduct = async (id) => {
     const { error } = await supabase.from('products').delete().eq('id', id);
-    const updatedProducts = products.filter((p) => p.id !== id);
-    setProducts(updatedProducts);
-    saveLocalProducts(updatedProducts);
 
     if (error) {
       console.error('Failed to delete product from Supabase:', error.message);
+      alert('Unable to delete product from cloud database. Please check Supabase permissions and connection.');
+      return;
     }
+
+    const updatedProducts = products.filter((p) => p.id !== id);
+    setProducts(updatedProducts);
+    saveLocalProducts(updatedProducts);
   };
 
   return (

@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { StoreContext } from '../context/StoreContext';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { testSupabaseConnection } from '../supabaseClient';
 
 const Admin = () => {
   const { products, addProduct, updateProduct, deleteProduct } = useContext(StoreContext);
@@ -10,6 +11,8 @@ const Admin = () => {
   
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
+  const [testResult, setTestResult] = useState(null);
+  const [isTesting, setIsTesting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -87,6 +90,13 @@ const Admin = () => {
     return role.charAt(0).toUpperCase() + role.slice(1);
   };
 
+  const handleTestConnection = async () => {
+    setIsTesting(true);
+    const result = await testSupabaseConnection();
+    setTestResult(result);
+    setIsTesting(false);
+  };
+
   return (
     <div className="admin-page container" style={{ padding: '3rem 2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -99,13 +109,32 @@ const Admin = () => {
               </p>
             )}
           </div>
-          <div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button onClick={handleTestConnection} className="btn btn-outline" disabled={isTesting} style={{ padding: '0.5rem 1rem' }}>
+              {isTesting ? 'Testing...' : 'Test DB Connection'}
+            </button>
             <button onClick={async () => { await logout(); navigate('/login'); }} className="btn btn-outline">
               Logout
             </button>
           </div>
         </div>
       </div>
+
+      {testResult && (
+        <div style={{
+          background: testResult.success ? '#d4edda' : '#f8d7da',
+          color: testResult.success ? '#155724' : '#721c24',
+          padding: '1rem',
+          borderRadius: 'var(--border-radius)',
+          marginBottom: '2rem',
+          border: `1px solid ${testResult.success ? '#c3e6cb' : '#f5c6cb'}`
+        }}>
+          <strong>{testResult.success ? '✓ Connection OK' : '✗ Connection Failed'}</strong>
+          <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>
+            {testResult.error || 'Supabase products table is accessible'}
+          </p>
+        </div>
+      )}
 
       <div className="admin-grid">
         
