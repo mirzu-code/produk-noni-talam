@@ -21,7 +21,7 @@ export const testSupabaseConnection = async () => {
     // Try to fetch from products table
     const { data, error, status } = await supabase
       .from('products')
-      .select('COUNT(*)', { count: 'exact' })
+      .select('*')
       .limit(1);
 
     if (error) {
